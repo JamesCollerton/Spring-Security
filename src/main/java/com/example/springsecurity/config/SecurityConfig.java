@@ -2,6 +2,7 @@ package com.example.springsecurity.config;
 
 import com.example.springsecurity.filter.ApiKeyAuthenticationFilter;
 import com.example.springsecurity.provider.ApiKeyAuthenticationProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 /*
    TODO: What are all of these annotations
@@ -24,7 +25,7 @@ import java.util.Arrays;
 @EnableCaching
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-  //  @Autowired private ApiKeyAuthenticationFilter apiKeyAuthenticationFilter;
+  @Autowired private ApiKeyAuthenticationProvider apiKeyAuthenticationProvider;
 
   @Override
   protected void configure(HttpSecurity httpSecurity) throws Exception {
@@ -38,18 +39,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             AnonymousAuthenticationFilter.class);
   }
 
-  //  @Override
-  //  protected void configure(AuthenticationManagerBuilder auth) {
-  //    auth.authenticationProvider(apiKeyAuthenticationProvider());
-  //  }
-
   @Bean
   public AuthenticationManager authenticationManager() {
-    return new ProviderManager(Arrays.asList(new ApiKeyAuthenticationProvider()));
+    return new ProviderManager(Collections.singletonList(apiKeyAuthenticationProvider));
   }
-
-  //  @Bean
-  //  public ApiKeyAuthenticationProvider apiKeyAuthenticationProvider() {
-  //    return new ApiKeyAuthenticationProvider();
-  //  }
 }

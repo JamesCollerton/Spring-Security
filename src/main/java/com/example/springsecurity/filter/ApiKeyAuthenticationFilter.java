@@ -34,12 +34,6 @@ public class ApiKeyAuthenticationFilter extends AbstractAuthenticationProcessing
     return getAuthenticationManager().authenticate(token);
   }
 
-  //  @Override
-  //  //  @Autowired
-  //  public void setAuthenticationManager(AuthenticationManager authenticationManager) {
-  //    super.setAuthenticationManager(authenticationManager);
-  //  }
-
   @Override
   protected void successfulAuthentication(
       HttpServletRequest request,

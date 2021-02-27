@@ -12,16 +12,16 @@ public class ApiKeyAuthenticationToken extends AbstractAuthenticationToken {
   /*
    TODO: What is NO AUTHORITIES
   */
-  public ApiKeyAuthenticationToken(String apiKey) {
-    super(AuthorityUtils.NO_AUTHORITIES);
-    this.apiKey = apiKey;
-    setAuthenticated(true);
-  }
-
   public ApiKeyAuthenticationToken(String apiKey, boolean authenticated) {
     super(AuthorityUtils.NO_AUTHORITIES);
     this.apiKey = apiKey;
     setAuthenticated(authenticated);
+  }
+
+  public ApiKeyAuthenticationToken(String apiKey) {
+    super(AuthorityUtils.NO_AUTHORITIES);
+    this.apiKey = apiKey;
+    setAuthenticated(false);
   }
 
   public ApiKeyAuthenticationToken() {
@@ -34,6 +34,9 @@ public class ApiKeyAuthenticationToken extends AbstractAuthenticationToken {
     return null;
   }
 
+  /*
+   TODO: What is principal
+  */
   @Override
   public Object getPrincipal() {
     return apiKey;
