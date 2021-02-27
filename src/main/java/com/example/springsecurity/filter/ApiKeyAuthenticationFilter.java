@@ -2,11 +2,10 @@ package com.example.springsecurity.filter;
 
 import com.example.springsecurity.model.ApiKeyAuthenticationToken;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
-import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -16,25 +15,40 @@ import java.io.IOException;
 import java.util.Optional;
 
 @Slf4j
-@Component
-public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
+public class ApiKeyAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
+
+  public ApiKeyAuthenticationFilter(AuthenticationManager authenticationManager) {
+    super("/**");
+    this.setAuthenticationManager(authenticationManager);
+  }
 
   @Override
-  protected void doFilterInternal(
-      HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-      throws ServletException, IOException {
+  public Authentication attemptAuthentication(
+      HttpServletRequest request, HttpServletResponse response) {
 
     Optional<String> apiKeyOptional = Optional.ofNullable(request.getHeader("x-api-key"));
 
-    Authentication tokenAuth =
-        apiKeyOptional
-            .map(apiKey -> new PreAuthenticatedAuthenticationToken(apiKey, apiKey))
-            .orElse(new PreAuthenticatedAuthenticationToken("anonymous", ""));
+    ApiKeyAuthenticationToken token =
+        apiKeyOptional.map(ApiKeyAuthenticationToken::new).orElse(new ApiKeyAuthenticationToken());
 
-    ApiKeyAuthenticationToken token = new ApiKeyAuthenticationToken(apiKey);
+    return getAuthenticationManager().authenticate(token);
+  }
 
-    SecurityContextHolder.getContext().setAuthentication(tokenAuth);
+  //  @Override
+  //  //  @Autowired
+  //  public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+  //    super.setAuthenticationManager(authenticationManager);
+  //  }
 
+  @Override
+  protected void successfulAuthentication(
+      HttpServletRequest request,
+      HttpServletResponse response,
+      FilterChain chain,
+      Authentication authResult)
+      throws IOException, ServletException {
+
+    SecurityContextHolder.getContext().setAuthentication(authResult);
     chain.doFilter(request, response);
   }
 }

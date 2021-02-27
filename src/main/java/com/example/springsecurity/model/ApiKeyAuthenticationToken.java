@@ -1,21 +1,32 @@
 package com.example.springsecurity.model;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.Transient;
-
-import java.util.Collection;
+import org.springframework.security.core.authority.AuthorityUtils;
 
 @Transient
 public class ApiKeyAuthenticationToken extends AbstractAuthenticationToken {
 
   private String apiKey;
 
-  public ApiKeyAuthenticationToken(
-      String apiKey, Collection<? extends GrantedAuthority> authorities) {
-    super(authorities);
+  /*
+   TODO: What is NO AUTHORITIES
+  */
+  public ApiKeyAuthenticationToken(String apiKey) {
+    super(AuthorityUtils.NO_AUTHORITIES);
     this.apiKey = apiKey;
     setAuthenticated(true);
+  }
+
+  public ApiKeyAuthenticationToken(String apiKey, boolean authenticated) {
+    super(AuthorityUtils.NO_AUTHORITIES);
+    this.apiKey = apiKey;
+    setAuthenticated(authenticated);
+  }
+
+  public ApiKeyAuthenticationToken() {
+    super(AuthorityUtils.NO_AUTHORITIES);
+    setAuthenticated(false);
   }
 
   @Override
