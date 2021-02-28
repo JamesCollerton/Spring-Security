@@ -3,15 +3,10 @@ package com.example.springsecurity.controller;
 import com.example.springsecurity.model.Order;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
-/*
-   TODO: What is PreAuthorize
-*/
 @Slf4j
-@PreAuthorize("isAuthenticated()")
 @Controller
 public class OrderController {
 
